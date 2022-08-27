@@ -1,0 +1,26 @@
+[
+  {
+    "guestName": "Tushar Mehrotra",
+    "guestNumber": "1",
+    "payment": "200",
+    "status": "admitted"
+  },
+  {
+    "guestName": "Pratham Shankar",
+    "guestNumber": "2",
+    "payment": "200",
+    "status": "waiting"
+  },
+  {
+    "guestName": "Ashish Kapur",
+    "guestNumber": "3",
+    "payment": "200",
+    "status": "admitted"
+  },
+  {
+    "guestName": "Samir Nouri",
+    "guestNumber": "4",
+    "payment": "200",
+    "status": "waiting"
+  }
+]
