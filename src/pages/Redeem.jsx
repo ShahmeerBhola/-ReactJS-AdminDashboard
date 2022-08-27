@@ -4,7 +4,7 @@ import axios from "axios";
 
 function Redeem() {
     const [check,setCheck]=useState({})
-    const[val,setVal]=useState('')
+    const[val,setVal]=useState(0)
     const[data,setData]=useState({})
     const [details,setDetails]=useState({})
     const Param=useParams()
@@ -12,7 +12,7 @@ function Redeem() {
     useEffect(()=>{
         axios.get(`https://theblach.com/api/user/getUser/${Param.id}`)
         .then((res)=>{
-            setVal(res.data.amount)
+            setVal(res.data.amount-res.data.redeemedAmount)
         })
         .catch((err)=>{
           console.log(err);
@@ -49,7 +49,7 @@ function Redeem() {
         userId:Param.id,
         qrId:Param.ab,
       }).then((res)=>{
-        setVal(res.data.redeemedAmount)
+        setVal(res.data.amount-res.data.redeemedAmount)
         localStorage.setItem(JSON.stringify('user',res.data))
       }).catch((err)=>{
         console.log("err",err);
@@ -58,6 +58,10 @@ function Redeem() {
   
     }
   return (
+    <>
+    {val===0?<div style={{margin: "100px auto", width: "fit-content"}}>
+      <h3>The QR is fully redeemed and it can't be redeemed again ! </h3>
+    </div>:
     <div style={{display:"flex" ,alignItems:"center",flexDirection:"column", gap:"10px",paddingTop:"60px"}}>
         <h2 style={{fontSize:"30px"}}>{details.id}</h2>
         <h2 style={{fontSize:"30px"}}>Amount</h2>
@@ -65,10 +69,13 @@ function Redeem() {
         <div style={{padding:"10px 20px",background:"green", color:"white", fontSize:"20px"}} onClick={submitHandler}>Submit</div>
 
         {
-            val && <h2>Remaining Amount : {val}</h2>
+            <h2>Remaining Amount : {val}</h2>
         }
+        
         <div style={{padding:"10px 5px", fontSize:"24px" ,background:"red",marginTop:"25px",borderRadius:"10px",color:"white"}} onClick={redeemHandler}> REDEEM ALL</div>
-    </div>
+        </div>
+}
+        </>
   )
 }
 
