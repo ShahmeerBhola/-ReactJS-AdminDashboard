@@ -39,6 +39,11 @@ const Dashboard = () => {
     }, 10000);
   }, []);
 
+  useEffect(() => {
+    getData();
+    getStats();
+  }, [date]);
+
   const getData = async () => {
     const date = localStorage.getItem("date");
     await axios
@@ -63,9 +68,11 @@ const Dashboard = () => {
     //   .catch((err) => {
     //     console.log(err);
     //   });
+    const date = localStorage.getItem("date");
+
     try {
       const { data } = await axios.get(
-        "https://theblach.com/api/user/getStats"
+        `https://theblach.com/api/user/getStats/${date}`
       );
       setStats(data);
     } catch (err) {
