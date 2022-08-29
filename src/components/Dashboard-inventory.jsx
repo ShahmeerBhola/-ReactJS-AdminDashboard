@@ -1,8 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import order from "../data/orders.json";
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+import axios from "axios";
 
 const Dashboardinventory = () => {
+  const [data,setData]=useState([])
+  const [value,setValue]=useState('')
+  useEffect(()=>{
+    axios.get(`https://theblach.com/api/admin/getAll`)
+    .then((res)=>{
+      setData(res.data)
+
+    })
+    .catch((err)=>{
+      console.log("err",err);
+    })
+  },[])
+  const inventoryHandler=(e)=>{
+    e.preventDefault();
+    axios.put(`https://theblach.com/api/admin/update`,{inventory:value})
+    .then((res)=>{
+      setValue("")
+      getData()
+
+    })
+    .catch((err)=>{
+      console.log("err",err);
+    })
+  }
+
+  const getData=()=>{
+    axios.get(`https://theblach.com/api/admin/getAll`)
+    .then((res)=>{
+      setData(res.data)
+
+    })
+    .catch((err)=>{
+      console.log("err",err);
+    })
+  }
   return (
+
+    
     <main>
       <h1>Inventory</h1>
       <div className="date">
@@ -15,7 +55,7 @@ const Dashboardinventory = () => {
           <div className="middle">
             <div className="left">
               <h3>No. of Guests Admitted</h3>
-              <h1>120</h1>
+              <h1>{data.length>0&&data[0].inventory-data[0].remainingInventory}</h1>
             </div>
             <div className="progress">
               <div className="number">
@@ -23,7 +63,7 @@ const Dashboardinventory = () => {
               </div>
             </div>
           </div>
-          <small className="text-muted">Inventory Available: 20</small>
+          <small className="text-muted">Inventory Available: {data.length>0&&data[0].remainingInventory}</small>
         </div>
         {/* <!--------------- End of Admission ---------------> */}
         <div className="occupied">
@@ -41,32 +81,31 @@ const Dashboardinventory = () => {
           </div>
           <small className="text-muted">Tables Available: 1</small>
         </div>
-        {/* <!--------------- End of Occupied --------------->                  */}
         
-        
-        {/* <!--------------- End of Revenue ---------------> */}
+      {/* <!--------------- End of Revenue ---------------> */}
       </div>
       {/* <!--------------- End of Insights ---------------> */}
 
-      <button style={{margin:"10px", marginTop: "20px", background:"red", width:"200px", height: "50px", fontSize:"22px",textAlign:"center",color:"white",borderRadius:"20px"}}>
+      <Popup  trigger={<button class="open-button" style={{background:"red"}}> Change inventory </button>} 
+     position="right center">
+     <div><h3>Current inventory: {data.length>0&&data[0].inventory}</h3></div>
+     <form onSubmit={inventoryHandler}>
+    <label for="quantity"> Quantity:</label>
+  <input type="number" id="quantity" name="quantity"onChange={(e)=>{setValue(e.target.value)}} />
+  <input type="submit">
+  </input>
+    </form>
+    </Popup>
+
+      <button className= "open-button" style={{background:"green", marginLeft: "20px" , marginTop: "20px"}}>
         {/* <span className="material-icons-sharp">bar_chart</span> */}
-        <div className="">
-          <div className="">
-            <h3>Change Inventory Limit</h3>
-          </div>
-        </div>
-        {/* <small className="text-muted">Last 24 Hours</small> */}
-      </button>
-      <button style={{margin:"10px", background:"green", width:"200px", height: "50px", fontSize:"22px",textAlign:"center",color:"white",borderRadius:"20px"}}>
-        {/* <span className="material-icons-sharp">bar_chart</span> */}
-        <div className="">
+        <div >
           <div className="">
             <h3>Change Tables Available</h3>
           </div>
         </div>
         {/* <small className="text-muted">Last 24 Hours</small> */}
       </button>
-      
     </main>
   );
 };

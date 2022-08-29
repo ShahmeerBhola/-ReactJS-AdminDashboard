@@ -81,6 +81,20 @@ const Dashboard = () => {
   };
 
   const inputHandler = (e, id) => {
+    if (e.target.value == "Cancel") {
+      axios
+        .put("https://theblach.com/api/user/updateQRStatus", {
+          qrStatus: e.target.value,
+          userId: id,
+        })
+        .then((res) => {
+          console.log(res);
+          getData();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }else{
     axios
       .put("https://theblach.com/api/user/updateStatus", {
         status: e.target.value,
@@ -93,6 +107,7 @@ const Dashboard = () => {
       .catch((err) => {
         console.log(err);
       });
+    }
   };
   const qrHandler = (e, id) => {
     if (e.target.value !== "Cancel") {
@@ -245,9 +260,7 @@ const Dashboard = () => {
                           <option className="warning" value="Disabled">
                             Disabled
                           </option>
-                          <option className="primary" value="Cancel">
-                            Cancel
-                          </option>
+
                         </select>
                       ) : (
                         <h4>Not Generated</h4>
@@ -274,6 +287,9 @@ const Dashboard = () => {
                         <option className="primary" value="Completed">
                           Completed
                         </option>
+                        <option className="primary" value="Cancel">
+                            Cancel QR
+                          </option>
                       </select>
                     </td>
                     <td

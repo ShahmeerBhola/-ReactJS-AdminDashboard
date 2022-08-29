@@ -1,4 +1,3 @@
-import axios from "axios";
 import React from "react";
 import order from "../data/orders.json";
 
@@ -7,7 +6,7 @@ const Dashboardrevenue = () => {
   const closedHandler=()=>{
     axios.put("https://theblach.com/api/qr-code/closeAll")
     .then((res)=>{
-      alert("successfully");
+      alert("Day closed succesfully");
     })
     .catch((err)=>{
       console.log(err);
