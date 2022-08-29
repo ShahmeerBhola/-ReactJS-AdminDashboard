@@ -83,10 +83,7 @@ const Dashboard = () => {
   const inputHandler = (e, id) => {
     if (e.target.value == "Cancel") {
       axios
-        .put("https://theblach.com/api/user/updateQRStatus", {
-          qrStatus: e.target.value,
-          userId: id,
-        })
+        .delete(`https://theblach.com/api/user/cancelQr/${id}`)
         .then((res) => {
           console.log(res);
           getData();
