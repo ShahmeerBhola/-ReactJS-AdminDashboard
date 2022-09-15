@@ -44,6 +44,19 @@ const Dashboard = () => {
     getStats();
   }, [date]);
 
+  
+    const getStats = async () => {
+      const date = localStorage.getItem("date");
+  
+      try {
+        const { data } = await axios.get(
+          `https://theblach.com/api/user/getStats/${date}`
+        );
+        setStats(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
   const getData = async () => {
     const date = localStorage.getItem("date");
     await axios
@@ -57,27 +70,6 @@ const Dashboard = () => {
       .catch((err) => {
         console.log(err);
       });
-  };
-
-  const getStats = async () => {
-    // await axios
-    //   .get(`https://theblach.com/api/user/getStats`)
-    //   .then((res) => {
-    //     setStats(res.data);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-    const date = localStorage.getItem("date");
-
-    try {
-      const { data } = await axios.get(
-        `https://theblach.com/api/user/getStats/${date}`
-      );
-      setStats(data);
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   const inputHandler = (e, id) => {

@@ -3,12 +3,20 @@ import order from "../data/orders.json";
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import axios from "axios";
+import * as moment from "moment";
 
 const Dashboardinventory = () => {
   const [data,setData]=useState([])
   const [value,setValue]=useState('')
-  useEffect(()=>{
-    axios.get(`https://theblach.com/api/admin/getAll`)
+  const [date, setDate] = useState();
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalAmount: 0,
+    totalRedeemedAmount: 0,
+  });
+
+  useEffect(async()=>{
+    await axios.get(`https://theblach.com/api/admin/getAll`)
     .then((res)=>{
       setData(res.data)
 
@@ -16,6 +24,15 @@ const Dashboardinventory = () => {
     .catch((err)=>{
       console.log("err",err);
     })
+    const date = localStorage.getItem("date");
+    try {
+      const { data } = await axios.get(
+        `https://theblach.com/api/user/getStats/${date}`
+      );
+      setStats(data);
+    } catch (err) {
+      console.log(err);
+    }
   },[])
   const inventoryHandler=(e)=>{
     e.preventDefault();
@@ -30,8 +47,8 @@ const Dashboardinventory = () => {
     })
   }
 
-  const getData=()=>{
-    axios.get(`https://theblach.com/api/admin/getAll`)
+  const getData=async()=>{
+   await axios.get(`https://theblach.com/api/admin/getAll`)
     .then((res)=>{
       setData(res.data)
 
@@ -40,13 +57,45 @@ const Dashboardinventory = () => {
       console.log("err",err);
     })
   }
+
+  useEffect(() => {
+    const yourDate = new Date();
+    const NewDate = moment(new Date()).format("YYYY-MM-DD");
+    localStorage.setItem("date", NewDate);
+    setDate(NewDate);
+    getData();
+  }, []);
+  useEffect(() => {
+    getData();
+    getStats();
+  }, [date]);
+  
+  const getStats = async () => {
+    const date = localStorage.getItem("date");
+
+    try {
+      const { data } = await axios.get(
+        `https://theblach.com/api/user/getStats/${date}`
+      );
+      setStats(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const dateHandler = (e) => {
+    const today = e.target.value;
+    const NewDate = moment(today).format("YYYY-MM-DD");
+    localStorage.setItem("date", NewDate);
+    setDate(NewDate);
+  };
   return (
 
     
     <main>
       <h1>Inventory</h1>
       <div className="date">
-        <input type="date" />
+        <input type="date" onChange={dateHandler} value={date} />
       </div>
 
       <div className="insights">
@@ -55,7 +104,7 @@ const Dashboardinventory = () => {
           <div className="middle">
             <div className="left">
               <h3>No. of Guests Admitted</h3>
-              <h1>{data.length>0&&data[0].inventory-data[0].remainingInventory}</h1>
+              <h1>{stats.totalUsers}</h1>
             </div>
             <div className="progress">
               <div className="number">
@@ -63,7 +112,7 @@ const Dashboardinventory = () => {
               </div>
             </div>
           </div>
-          <small className="text-muted">Inventory Available: {data.length>0&&data[0].remainingInventory}</small>
+          <small className="text-muted">Inventory Available: {data.length>0&&data[0].inventory-stats.totalUsers}</small>
         </div>
         {/* <!--------------- End of Admission ---------------> */}
         <div className="occupied">

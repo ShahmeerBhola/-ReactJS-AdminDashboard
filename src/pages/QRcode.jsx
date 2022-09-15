@@ -79,7 +79,7 @@ function QRcode() {
           >
             <p>{data.id}</p>
             <p>{details.name}</p>
-            <p>{data.qr[0].generatedAt}</p>
+            <p>{new Date(data.qr[0].generatedAt).toLocaleString()}</p>
             <p>{details.quantity} person(s)</p>
             <p>{details.paymentType}</p>
             <p>Total: {details.amount - details.redeemedAmount} </p>
